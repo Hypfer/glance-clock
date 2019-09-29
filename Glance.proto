@@ -1,0 +1,323 @@
+syntax = "proto2";
+
+//TODO: required with default?
+
+enum Days {
+	None = 0;
+	Monday = 1;
+	Tuesday = 2;
+	Wednesday = 3;
+	Thursday = 4;
+	Friday = 5;
+	Saturday = 6;
+	Sunday = 7;
+	All = 8;
+}
+
+enum Animation {
+	NoneAnimation = 0;
+	Pulse = 1;
+	Wave = 2;
+	GifStart = 3;
+	Wheel = 5;
+	Flower = 6;
+	Flower2 = 7;
+	Fan = 8;
+	Sun = 9;
+	Thunderstorm = 10;
+	Cloud = 11;
+	WeatherStart = 13;
+	WeatherCloudy = 15;
+	WeatherFog = 16;
+	WeatherLightRain = 17;
+	WeatherRain = 18;
+	WeatherThunderstorm = 19;
+	WeatherSnow = 20;
+	WeatherHail = 21;
+	WeatherWind = 22;
+	WeatherTornado = 23;
+	WeatherHurricane = 24;
+	WeatherSnowThunderstorm = 25;
+}
+
+enum Color {
+	Black = 0;
+	DarkGoldenRod = 1;
+	Darkorange = 2;
+	Olive = 3;
+	OrangeRed = 4;
+	Red = 5;
+	Maroon = 6;
+	DarkMagenta = 7;
+	MediumVioletRed = 8;
+	Brown = 9;
+	Indigo = 10;
+	BlueViolet = 11;
+	White = 12;
+	LightSlateBlue = 13;
+	RoyalBlue = 14;
+	Blue = 15;
+	CornflowerBlue = 16;
+	SkyBlue = 17;
+	Turquoise = 18;
+	Aqua = 19;
+	MediumSpringGreen = 20;
+	LimeGreen = 21;
+	DarkGreen = 22;
+	Lime = 23;
+	LawnGreen = 24;
+	Google1 = 25;
+	Google2 = 26;
+	Google3 = 27;
+	Google4 = 28;
+	Google5 = 29;
+	Google6 = 30;
+	Google7 = 31;
+	Google8 = 32;
+	Google9 = 33;
+	Google10 = 34;
+	Google11 = 35;
+	Google12 = 36;
+	Google13 = 37;
+	Google14 = 38;
+	Google15 = 39;
+	Google16 = 40;
+	Google17 = 41;
+	Google18 = 42;
+	Google19 = 43;
+	Google20 = 44;
+	Google21 = 45;
+	Google22 = 46;
+	Google23 = 47;
+	Google24 = 48;
+	Google25 = 49;
+	Google26 = 50;
+	Google27 = 51;
+	Google28 = 52;
+	Google29 = 53;
+}
+
+enum Sound {
+	NoneSound = 0;
+	Alarm = 1;
+	Calendar_alert = 2;
+	Charging = 3;
+	Fitness_alert = 4;
+	General_alert_1 = 5;
+	General_alert_2 = 6;
+	Goodbye = 7;
+	Hello = 8;
+	Ringtone = 9;
+	Taxi = 10;
+	Timer_end = 11;
+	Weather_alert = 12;
+	Break = 13;
+	Opening = 14;
+	High = 15;
+	Shine = 16;
+	Extension = 17;
+}
+
+message CustomScene { //TODO This can't parse messages which should in fact be scenes
+	repeated Object object = 1;
+	
+	message Object {
+		required Method method = 1 [default = Fill];
+		optional int32 startTime = 2 [default = 0];
+		required int32 lifeTime = 3 [default = 1];
+		optional Result result = 4 [default = OK];
+		optional AreaAnimationData areaAnimation = 5;
+		optional FillData fill = 6;
+		repeated TextData text = 7;
+		optional Sound sound = 8 [default = NoneSound];
+		optional MovingBarData movingBar = 9;
+		optional CmdData cmd = 11;
+		optional GifData gif = 12;
+		optional WeatherData weather = 13;
+		
+		message AreaAnimationData {
+			required Type type = 1 [default = Pulse];
+			repeated int32 area = 2;
+			optional WaveData wave = 3;
+			optional PulseData pulse = 4;
+			optional LightFlashData flashLight = 5;
+			
+			message LightFlashData {
+				optional Color color = 1 [default = White];
+				optional int32 speed = 2 [default = 1];
+			}
+			
+			message PulseData {
+								optional int32 riseTime = 1 [default = 50];
+								optional int32 fallTime = 2 [default = 50];
+				
+			}
+			
+			enum Type {
+				Pulse = 0;
+				Wave = 1;
+				LightFlash = 2;
+			}
+			
+			message WaveData {
+							   optional int32 speed = 3 [default = 1];
+			}
+		}
+		
+		message CmdData {
+			required bytes data = 1;
+		}
+		
+		message FillData {
+			repeated int32 segment = 1;
+		}
+		
+		message GifData {
+			  required Animation type = 1 [default = GifStart];
+			  optional int32 segment = 2 [default = 782080];
+			  optional int32 speed = 3 [default = 3];
+		}
+		
+		enum Method {
+			Cmd = 0;
+			Fill = 1;
+			Sound = 2;
+			Text = 3;
+			MovingBar = 4;
+			AreaAnimation = 5;
+			Gif = 6;
+			Weather = 7;
+		}
+		
+		message MovingBarData {
+			required int32 area = 1 [default = 0];
+			optional Color frontColor = 2 [default = Blue];
+			optional Color backColor = 3 [default = White];
+			optional int32 speed = 4 [default = 0];
+		}
+		
+		enum Result {
+			OK = 0;
+			SaveTime = 1;
+			BackTime = 2;
+			DelTime = 3;
+			Expired = 4;
+			End = 5;
+			NewSeq = 6;
+		}
+		
+		message WeatherData {
+			required Condition condition = 1 [default = Snow];
+			optional Position position = 2 [default = FullScreen];
+			optional int32 intensity = 3 [default = 5];
+			
+			enum Condition {
+				Snow = 0;
+				Rain = 1;
+				Fog = 2;
+			}
+			
+			enum Position {
+				FullScreen = 0;
+				UpperHalf = 1;
+				DownHalf = 2;
+			}
+		}
+	}
+}
+
+
+message Notice {
+	optional Animation type = 1 [default = Pulse];
+	optional Sound sound = 2 [default = General_alert_1];
+	optional Color color = 3 [default = Lime];
+	repeated TextData text = 4;
+}
+
+message Segments {
+	repeated Segment segments = 1;
+	optional Sound sound = 2 [default = Calendar_alert];
+	
+	message Segment {
+		required int32 segment = 1 [default = 0];
+		repeated TextData text = 2;
+	}
+}
+
+message Settings { //TODO defaults
+				   optional DND dnd = 1;
+				   required bool nightModeEnabled = 2 [default = true];
+				   optional bool permanentDND = 3 [default = false];
+				   optional bool permanentMute = 4 [default = false];
+				   required DateFormat dateFormat = 5 [default = DateDisabled];
+				   optional int32 mgrSilentIntervalMin = 6 [default = 0];
+				   optional int32 mgrSilentIntervalMax = 7 [default = 0];
+				   required bool pointsAlwaysEnabled = 9 [default = false];
+				   required int32 displayBrightness = 10 [default = 0];
+				   required bool timeModeEnable = 11 [default = true];
+				   required bool timeFormat12 = 12 [default = false];
+				   optional int32 mgrUserActivityTimeout = 13 [default = 600];
+				   optional Silent silent = 14;
+
+				   message DND {
+					   required bool recurring = 1 [default = false];
+					   required int32 fromHour = 2 [default = 0];
+					   required int32 tillHour = 3 [default = 0];
+				   }
+
+				   enum DateFormat {
+					   DateDisabled = 0;
+					   Date24Jan = 1;
+					   Date24Tue = 2;
+					   DateJan24 = 3;
+					   DateTue24 = 4;
+				   }
+
+				   message Silent {
+					   required bool recurring = 1;
+					   required int32 fromHour = 2;
+					   required int32 tillHour = 3;
+				   }
+}
+
+message TextData {
+	optional Modificator modificators = 1 [default = Repeat];
+	required string text = 2 [default = ""];
+	
+	enum Modificator {
+		None = 0;
+		Repeat = 1;
+		Rapid = 2;
+		Delay = 3;
+	}
+}
+
+message Timer {
+	optional int32 countdown = 1 [default = 0];
+	repeated TextData finalText = 2;
+	repeated Interval intervals = 3;
+	
+	message Interval {
+		repeated TextData text = 1;
+		required int32 duration = 2 [default = 0];
+		optional int32 countdown = 3 [default = 0];
+	}
+}
+
+message AlarmData {
+	optional bool enabled = 2 [default = true];
+	optional int32 days = 3 [default = 0];
+	required Time time = 4;
+	required Sound sound = 5 [default = NoneSound];
+	repeated TextData text = 6;
+	
+	message Time {
+		required int32 hours = 1 [default = 0];
+		required int32 minutes = 2 [default = 0];
+	}
+}
+
+message Alarms {
+	repeated AlarmData alarm = 1;
+}
+

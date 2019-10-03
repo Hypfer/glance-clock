@@ -293,14 +293,16 @@ message TextData {
 }
 
 message Timer {
-	optional int32 countdown = 1 [default = 0];
-	repeated TextData finalText = 2;
-	repeated Interval intervals = 3;
+	optional int32 countdown = 1 [default = 0]; //Pre-timer countdown.
+	//Values > 99 will work but with broken text e.g. 100 => ":0" since charcode 58 is ":" and 57 is "9"
+	
+	repeated Interval intervals = 2;
+	repeated TextData finalText = 3;
 	
 	message Interval {
-		repeated TextData text = 1;
-		required int32 duration = 2 [default = 0];
-		optional int32 countdown = 3 [default = 0];
+		repeated TextData text = 1; //Valid, but not used at all?
+		required int32 duration = 2 [default = 0]; //Seconds
+		optional int32 countdown = 3 [default = 0]; //Seconds
 	}
 }
 
@@ -321,3 +323,29 @@ message Alarms {
 	repeated AlarmData alarm = 1;
 }
 
+message ForecastScene {
+	required int64 timestamp = 1;
+	//A unix timestamp
+	
+	optional uint32 doNotChange = 2 [default = 0];
+	//Seriously. Don't. It will soft-brick the scene feature.
+	//It will also get very hot so the hardware might get damaged as well.
+	
+	required int32 maxColor = 4; //RGB FFFFFF = white
+	required int32 minColor = 5;
+	required int32 max = 6;
+	required int32 min = 7;
+	//The clock will use these to draw the circle from the values in "values"
+	
+	required bytes values = 8;
+	//24 Int16LE. Each representing the forecasted value for one time unit (30m or 1h?)
+	//starting at timestamp
+	
+	
+	required bytes template = 9;
+	//0x08 will be replaced with the current value from values which is valid at this moment
+	//It can appear multiple times. All appearances will be replaced
+	//To write an icon, it has to be prefixed with 0xC2. e.g. 0xC2,0xB0 for °
+	//Regular ascii codes can be used
+	//Example template: 0xC2,0x8F,0x08,0xC2,0xB0 = "[Thermometer icon][Current Value]°"
+}

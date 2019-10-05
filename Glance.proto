@@ -14,31 +14,58 @@ enum Days {
 	All = 8;
 }
 
+enum SomeOtherAnimation { //TODO: is this even valid at all?
+	  NoneAnimation = 0;
+	  Pulse = 1;
+	  Wave = 2;
+	  GifStart = 3;
+	  Wheel = 5;
+	  Flower = 6;
+	  Flower2 = 7;
+	  Fan = 8;
+	  Sun = 9;
+	  Thunderstorm = 10;
+	  Cloud = 11;
+	  WeatherStart = 13;
+	  WeatherCloudy = 15;
+	  WeatherFog = 16;
+	  WeatherLightRain = 17;
+	  WeatherRain = 18;
+	  WeatherThunderstorm = 19;
+	  WeatherSnow = 20;
+	  WeatherHail = 21;
+	  WeatherWind = 22;
+	  WeatherTornado = 23;
+	  WeatherHurricane = 24;
+	  WeatherSnowThunderstorm = 25;
+}
+
 enum Animation {
 	NoneAnimation = 0;
 	Pulse = 1;
 	Wave = 2;
-	GifStart = 3;
-	Wheel = 5;
-	Flower = 6;
-	Flower2 = 7;
-	Fan = 8;
-	Sun = 9;
-	Thunderstorm = 10;
-	Cloud = 11;
-	WeatherStart = 13;
-	WeatherCloudy = 15;
-	WeatherFog = 16;
-	WeatherLightRain = 17;
-	WeatherRain = 18;
-	WeatherThunderstorm = 19;
-	WeatherSnow = 20;
-	WeatherHail = 21;
-	WeatherWind = 22;
-	WeatherTornado = 23;
-	WeatherHurricane = 24;
-	WeatherSnowThunderstorm = 25;
+	Fire = 10;
+	Wheel = 11;
+	Flower = 12;
+	Flower2 = 13;
+	Fan = 14;
+	Sun = 15;
+	Thunderstorm = 16;
+	Cloud = 17;
+	WeatherClear = 101;
+	WeatherCloudy = 102;
+	WeatherFog = 103;
+	WeatherLightRain = 104;
+	WeatherRain = 105;
+	WeatherThunderstorm = 106;
+	WeatherSnow = 107;
+	WeatherHail = 108;
+	WeatherWind = 109;
+	WeatherTornado = 110;
+	WeatherHurricane = 111;
+	WeatherSnowThunderstorm = 112;
 }
+
 
 enum Color {
 	Black = 0;

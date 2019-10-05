@@ -196,6 +196,8 @@ Then release it as well.
 
 Please note that this will also reset the firmware back to the factory version.
 
+## Misc
+You can find firmware images, the official website documentation and more [here.](https://github.com/Hypfer/glance-clock-assets)
 
 ## Credits
 The structure of this readme was plagiarized from [https://github.com/aprosvetova/xiaomi-kettle](https://github.com/aprosvetova/xiaomi-kettle)

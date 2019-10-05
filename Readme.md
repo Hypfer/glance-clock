@@ -21,11 +21,9 @@ The Clock doesn't advertise itself as a regular pairable bluetooth device so get
  (e.g. a regular linux host) is a pain.
 
 ### Time Synchronization
-**HELP WANTED**
- 
-For Time Synchronization, the Mobile App opens up a BLE `Current Time Service` on the Phone which is polled by the clock.
+For Time Synchronization, the Mobile App opens up a BLE `Current Time Service` on the Phone which is polled by the clock on connect. (And periodically?)
 
-To get the Clock to poll said Time Service, the Mobile App reads Characteristic `5075fc78-1e0e-11e7-93ae-92361f002671` of 
+To force the Clock to poll said Time Service, the Mobile App reads Characteristic `5075fc78-1e0e-11e7-93ae-92361f002671` of 
 service `5075f606-1e0e-11e7-93ae-92361f002671` and then immediately disconnects from the clock, which then fetches the time.
 Timing is of the essence here, since the Clock will only poll the time if the disconnect happens swiftly. (~100-200ms?)
 
@@ -69,23 +67,36 @@ Type `remove CLOCK_MAC` and begin again from the start. It might take multiple a
 ### Known commands
 _These are all in decimal_
 
-| Command                 | Sequence     | PayloadMessage | Description                                                                         |
-|-------------------------|--------------|----------------|-------------------------------------------------------------------------------------|
-| Settings                | 5,0,0,0      | Settings       |                                                                                     |
-| Timer                   | 3,0,0,0      | Timer          |                                                                                     |
-| TimerStop               | 10,0,0,0,0,- |                |                                                                                     |
-| Alarm                   | 4,47,0,0     | ??             |                                                                                     |
-| InfoUser                | 50,0,0,0,0   | -              |                                                                                     |
-| AlarmClear              | 21,0,0,0,0   | -              |                                                                                     |
-| AlarmStop               | 20,0,0,0,0   | -              |                                                                                     |
-| CallScene               | 6,83,0,103   | Notice         | With modificator 129?? On call end, ScenesDelete with SceneId 103 gets executed     |
-| ScenesStop              | 30,0,0,0,0   | -              |                                                                                     |
-| ScenesDelete            | 33,0,0,i,0   | -              | i = sceneId?                                                                        |
-| OpenBrightnessConfView  | 61           | -              |                                                                                     |
-| CloseBrightnessConfView | 60           | -              | Or general homescreen?                                                              |
-| WeatherWatchfaceFoo     | 35           | -              | ??                                                                                  |
-| Notify                  | 2,i,0,j      | Notice         | i = scene_priority Known j values  0 => default? ifttt 6 => Weather                 |
-| SaveForecastScene       | 7,i,j,k      | ForecastScene  | i:? prio maybe? j: 8 => only ring, 16 => only text, 24 => ring & text k: scene slot |
+| Command               | Sequence     | PayloadMessage    | Description                                                                         |
+|-----------------------|--------------|-------------------|-------------------------------------------------------------------------------------|
+| Notify                | 2,i,0,j      | Notice            | i = scene_priority Known j values  0 => default? ifttt 6 => Weather                 |
+| Timer                 | 3,0,0,0      | Timer             |                                                                                     |
+| Alarm                 | 4,47,0,0     | ??                |                                                                                     |
+| Settings              | 5,0,0,0      | Settings          |                                                                                     |
+| CallScene             | 6,83,0,103   | Notice            | With modificator 129?? On call end, ScenesDelete with SceneId 103 gets executed     |
+| SaveForecastScene     | 7,i,j,k      | ForecastScene     | i:? prio maybe? j: 8 => only ring, 16 => only text, 24 => ring & text k: scene slot |
+| SaveAppointmentsScene | 8,0,8,7      | AppointmentsScene | 7 seems to be the scene slot                                                        |
+|                       |              |                   |                                                                                     |
+| TimerStop             | 10,0,0,0,0,- |                   |                                                                                     |
+|                       |              |                   |                                                                                     |
+| AlarmStop             | 20,0,0,0,0   | -                 |                                                                                     |
+| AlarmClear            | 21,0,0,0,0   | -                 |                                                                                     |
+|                       |              |                   |                                                                                     |
+| ScenesStop            | 30,0,0,0,0   | -                 |                                                                                     |
+| ScenesDelete          | 33,0,0,i,0   | -                 | i = sceneId?                                                                        |
+| CallScene             | 34,0,6,1     | -                 | 6 and 1 probably mean something. I think this recalls a scene from memory           |
+| UpdateAndRefresh      | 35           | -                 | Displays cloud update animation and refreshes the screen                            |
+|                       |              |                   |                                                                                     |
+| ???                   | 41           | -                 | Seems to hide the watchface                                                         |
+| BondsClear            | 42           | -                 | Remove all paired devices                                                           |
+| StartCalibration      | 43           | -                 | Starts the calibration                                                              |
+| ConfirmCalibration    | 44           | -                 | Confirm the calibration                                                             |
+| ???                   | 45           | -                 | Some kind of alarm with notes on screen                                             |
+|                       |              |                   |                                                                                     |
+| ClearUserInfo         | 50,0,0,0,0   | -                 | Removes all paired devices and shuts off the clock.                                 |
+| BrightnessSceneStop   | 60           | -                 | Or general homescreen?                                                              |
+| BrightnessSceneStart  | 61           | -                 |                                                                                     |
+| DSP_STATE_SHOW        | 70           | -                 | Displays a long number. Maybe serial?                                               |
 It seems to be possible to omit zeroes. At least sending 20 instead of 20,0,0,0,0 also works
 
 ### Constants
@@ -182,6 +193,8 @@ There are icon characters available which you can use in any TextData you like
 If something goes horribly wrong, push and hold the reset button + Power button.
 Let go of the reset button and keep holding the Power button until the LED blinking pattern changes.
 Then release it as well.
+
+Please note that this will also reset the firmware back to the factory version.
 
 
 ## Credits

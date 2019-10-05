@@ -99,18 +99,18 @@ enum Color {
 
 enum Sound {
 	NoneSound = 0;
-	Alarm = 1;
-	Calendar_alert = 2;
+	Waves = 1; //Also known as Alarm
+	Rise = 2; //Also known as Calendar_alert
 	Charging = 3;
-	Fitness_alert = 4;
-	General_alert_1 = 5;
-	General_alert_2 = 6;
-	Goodbye = 7;
+	Steps = 4; //Also known as Fitness_alert
+	Radar = 5; //Also known as General_alert_1
+	Bells = 6; //Also known as General_alert_2
+	Bye = 7; //Also known as Goodbye
 	Hello = 8;
-	Ringtone = 9;
-	Taxi = 10;
-	Timer_end = 11;
-	Weather_alert = 12;
+	Flowers = 9; //Also known as Ringtone
+	Circles = 10; //Also known as Taxi
+	Complete = 11; //Also known as Timer_end
+	Popcorn = 12; //Also known as Weather_alert
 	Break = 13;
 	Opening = 14;
 	High = 15;
@@ -330,6 +330,7 @@ message ForecastScene {
 	optional uint32 doNotChange = 2 [default = 0];
 	//Seriously. Don't. It will soft-brick the scene feature.
 	//It will also get very hot so the hardware might get damaged as well.
+	//Valid values which don't brick the clock seem to be at least 0 and 1
 	
 	required int32 maxColor = 4; //RGB FFFFFF = white
 	required int32 minColor = 5;
@@ -338,8 +339,10 @@ message ForecastScene {
 	//The clock will use these to draw the circle from the values in "values"
 	
 	required bytes values = 8;
-	//24 Int16LE. Each representing the forecasted value for one time unit (30m or 1h?)
-	//starting at timestamp
+	//24 Int16LE. Each representing the forecasted value for one time unit (1h)
+	//starting at timestamp. Valid for 24h
+	//The clock will smoothen it automatically, so you can't have quickly alternating data.
+	//Well.. you can, but it will end up as a star pattern which looks pretty nice actually
 	
 	
 	required bytes template = 9;
@@ -348,4 +351,56 @@ message ForecastScene {
 	//To write an icon, it has to be prefixed with 0xC2. e.g. 0xC2,0xB0 for °
 	//Regular ascii codes can be used
 	//Example template: 0xC2,0x8F,0x08,0xC2,0xB0 = "[Thermometer icon][Current Value]°"
+}
+
+message AppointmentsScene {
+	required int64 timestamp = 1;
+	//A unix timestamp;
+	
+	required bytes appointmentData = 2;
+	//I don't really understand the format, sadly. It seems like I'm missing something important
+	//I've added sample appointment messages to this reposity so if you feel like looking into this further go ahead
+	//sample_appointments.js
+	
+	//8 Bytes per Appointment
+	
+	//Byte 0,1 encode the Starting time
+	//There are two Time ranges. One describes past events, the other future events
+	//It seems to be an absolute value describing the time of day while the day itself is taken from the timestamp(?)
+	
+	//58184 encodes 12:00 UTC Today "future time"
+	//49272 encodes 12:00 UTC yesterday "past time"
+	//
+	//58184 + 60 would be 13:00 UTC "future time"
+	//
+	//Since these numbers seem to be rather arbitrary, I assume that there is some encoding and or bitwise something going on
+	//I can't seem to figure that out, though, so help would be much appreciated
+	
+	
+	//Byte 2,3 encode the length + notification time
+	//Same possible encoding/bitwise operation stuff going on here
+	//0x80 0x07 is a 30m Appointment with 30m Notification
+	//0x81 0x07 is a 1h Appointment with 30m Notification
+	//0xC0 0xff is a 30m Appointment with no notification
+	//0xC1 0xff is a 1h Appointment with no notification
+	//0x01 0x03 is a 1h Appointment with 12m notification
+	//Again: Help is much appreciated
+	
+	
+	//Byte 4,5,6 encode the appointment color as B G R (whyever they've changed the order here)
+	
+	//Byte 7 encodes the "height" of the appointment if there are multiple appointments at the same time
+	//		=> Decimal 3, 6, 9, 12 for 1,2,3 and 4 pixel height
+	
+	
+	repeated TextData appointmentNames = 3;
+	
+	required Notify notify = 6;
+	required Sound sound = 7;
+	
+	
+	enum Notify {
+		DISABLED = 0;
+		ENABLED = 1;
+	}
 }

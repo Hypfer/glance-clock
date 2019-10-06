@@ -199,6 +199,12 @@ Please note that this will also reset the firmware back to the factory version.
 ## Misc
 You can find firmware images, the official website documentation and more [here.](https://github.com/Hypfer/glance-clock-assets)
 
+### Other random pieces of information
+`When you perform calibration hands don't reach 12:00 when there is a green segment, but stop at 11:59. Please take off the minute hand and place it back to make hands straight at 12:00. Probably the hands were mechanically misaligned a bit. `
+
+Concerning what is most likely command `35`:
+`Yes, we have added this icon to show that Clock is doing something and responding to changes. Otherwise, if you change an As Clock Face you may not see anything for 10-15 seconds before the face is changed.`
+
 ## Credits
 The structure of this readme was plagiarized from [https://github.com/aprosvetova/xiaomi-kettle](https://github.com/aprosvetova/xiaomi-kettle)
 

@@ -97,6 +97,7 @@ _These are all in decimal_
 | BrightnessSceneStop   | 60           | -                 | Or general homescreen?                                                              |
 | BrightnessSceneStart  | 61           | -                 |                                                                                     |
 | DSP_STATE_SHOW        | 70           | -                 | Displays a long number. Maybe serial?                                               |
+
 It seems to be possible to omit zeroes. At least sending 20 instead of 20,0,0,0,0 also works
 
 ### Constants
@@ -198,6 +199,15 @@ Please note that this will also reset the firmware back to the factory version.
 
 ## Misc
 You can find firmware images, the official website documentation and more [here.](https://github.com/Hypfer/glance-clock-assets)
+
+### Night Mode
+Taken from the offical Website + App Version 2.0.1:
+```
+Night mode activates a digital clock that you can see at night when the hands are not visible.
+In Night mode all integrations that set up As a clock Face (ACF) are disappeared, the sound is muted, but notifications will still be displayed.
+
+When it's dark to see the clock hands, the digital time will be shown on the clock face automatically. Uses internal ambient light sensor built into the clock 
+```
 
 ### Other random pieces of information
 `When you perform calibration hands don't reach 12:00 when there is a green segment, but stop at 11:59. Please take off the minute hand and place it back to make hands straight at 12:00. Probably the hands were mechanically misaligned a bit. `

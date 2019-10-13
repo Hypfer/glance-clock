@@ -67,36 +67,41 @@ Type `remove CLOCK_MAC` and begin again from the start. It might take multiple a
 ### Known commands
 _These are all in decimal_
 
-| Command               | Sequence     | PayloadMessage    | Description                                                                         |
-|-----------------------|--------------|-------------------|-------------------------------------------------------------------------------------|
-| Notify                | 2,i,0,j      | Notice            | i = scene_priority Known j values  0 => default? ifttt 6 => Weather                 |
-| Timer                 | 3,0,0,0      | Timer             |                                                                                     |
-| Alarm                 | 4,47,0,0     | ??                |                                                                                     |
-| Settings              | 5,0,0,0      | Settings          |                                                                                     |
-| CallScene             | 6,83,0,103   | Notice            | With modificator 129?? On call end, ScenesDelete with SceneId 103 gets executed     |
-| SaveForecastScene     | 7,i,j,k      | ForecastScene     | i:? prio maybe? j: 8 => only ring, 16 => only text, 24 => ring & text k: scene slot |
-| SaveAppointmentsScene | 8,0,8,7      | AppointmentsScene | 7 seems to be the scene slot                                                        |
-|                       |              |                   |                                                                                     |
-| TimerStop             | 10,0,0,0,0,- |                   |                                                                                     |
-|                       |              |                   |                                                                                     |
-| AlarmStop             | 20,0,0,0,0   | -                 |                                                                                     |
-| AlarmClear            | 21,0,0,0,0   | -                 |                                                                                     |
-|                       |              |                   |                                                                                     |
-| ScenesStop            | 30,0,0,0,0   | -                 |                                                                                     |
-| ScenesDelete          | 33,0,0,i,0   | -                 | i = sceneId?                                                                        |
-| CallScene             | 34,0,6,1     | -                 | 6 and 1 probably mean something. I think this recalls a scene from memory           |
-| UpdateAndRefresh      | 35           | -                 | Displays cloud update animation and refreshes the screen                            |
-|                       |              |                   |                                                                                     |
-| ???                   | 41           | -                 | Seems to hide the watchface                                                         |
-| BondsClear            | 42           | -                 | Remove all paired devices                                                           |
-| StartCalibration      | 43           | -                 | Starts the calibration                                                              |
-| ConfirmCalibration    | 44           | -                 | Confirm the calibration                                                             |
-| ???                   | 45           | -                 | Some kind of alarm with notes on screen                                             |
-|                       |              |                   |                                                                                     |
-| ClearUserInfo         | 50,0,0,0,0   | -                 | Removes all paired devices and shuts off the clock.                                 |
-| BrightnessSceneStop   | 60           | -                 | Or general homescreen?                                                              |
-| BrightnessSceneStart  | 61           | -                 |                                                                                     |
-| DSP_STATE_SHOW        | 70           | -                 | Displays a long number. Maybe serial?                                               |
+| Command                   | Sequence   | PayloadMessage    | Description                                                                                     |
+|---------------------------|------------|-------------------|-------------------------------------------------------------------------------------------------|
+| Notify                    | 2,i,0,j    | Notice            | i = scene_priority Known j values  0 => default? ifttt 6 => Weather                             |
+| Timer                     | 3,0,0,0    | Timer             |                                                                                                 |
+| Alarm                     | 4,47,0,0   | ??                |                                                                                                 |
+| Settings                  | 5,0,0,0    | Settings          |                                                                                                 |
+| CallScene                 | 6,83,0,103 | Notice            | With modificator 129?? On call end, ScenesDelete with SceneId 103 gets executed                 |
+| SaveForecastScene         | 7,i,j,k    | ForecastScene     | i:? prio maybe? j: 8 => only ring, 16 => only text, 24 => ring & text k: scene slot             |
+| SaveAppointmentsScene     | 8,0,i,7    | AppointmentsScene | i can be either 0 or 8. 0 is only alerts, 8 is alerts + watchface. 7 seems to be the scene slot |
+|                           |            |                   |                                                                                                 |
+| TimerStop                 | 10         | -                 |                                                                                                 |
+|                           |            |                   |                                                                                                 |
+| AlarmStop                 | 20         | -                 |                                                                                                 |
+| AlarmClear                | 21         | -                 |                                                                                                 |
+|                           |            |                   |                                                                                                 |
+| ScenesStop                | 30         | -                 | Go to previous scene slot. Screen turns black for a moment                                      |
+| ScenesStart               | 31         | -                 | Go to next scene slot                                                                           |
+| ScenesClear               | 32         | -                 | Clear all scenes. Also hides Digital Clockface until new scenes arrive or settings are updated  |
+| ScenesDelete              | 33,0,0,i   | -                 | i = sceneId                                                                                     |
+| ScenesDeleteMany          | 34,0,i,j   | -                 | i = To Slot, j = From Slot                                                                      |
+| UpdateAndRefresh          | 35         | -                 | Displays cloud update animation and refreshes the screen                                        |
+|                           |            |                   |                                                                                                 |
+| EnableAutomaticNightMode  | 40         | -                 |                                                                                                 |
+| DisableAutomaticNightMode | 41         | -                 |                                                                                                 |
+|                           |            |                   |                                                                                                 |
+| ???                       | 41         | -                 | Seems to hide the watchface                                                                     |
+| BondsClear                | 42         | -                 | Remove all paired devices                                                                       |
+| StartCalibration          | 43         | -                 | Starts the calibration                                                                          |
+| ConfirmCalibration        | 44         | -                 | Confirm the calibration                                                                         |
+| ???                       | 45         | -                 | Some kind of alarm with notes on screen                                                         |
+|                           |            |                   |                                                                                                 |
+| ClearUserInfo             | 50,0,0,0,0 | -                 | Removes all paired devices and shuts off the clock.                                             |
+| BrightnessSceneStop       | 60         | -                 |                                                                                                 |
+| BrightnessSceneStart      | 61         | -                 |                                                                                                 |
+| DSP_STATE_SHOW            | 70         | -                 | Displays a long number. Maybe serial?                                                           |
 
 It seems to be possible to omit zeroes. At least sending 20 instead of 20,0,0,0,0 also works
 
@@ -199,6 +204,8 @@ Please note that this will also reset the firmware back to the factory version.
 
 ## Misc
 You can find firmware images, the official website documentation and more [here.](https://github.com/Hypfer/glance-clock-assets)
+
+It is possible and recommended to flash Firmware ZIP files using the `nRF Toolbox App`.
 
 ### Night Mode
 Taken from the offical Website + App Version 2.0.1:

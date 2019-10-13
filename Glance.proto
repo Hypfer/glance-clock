@@ -397,16 +397,35 @@ message AppointmentsScene {
 	//8 Bytes per Appointment
 	
 	//Byte 0,1 encode the Starting time
-	//There are two Time ranges. One describes past events, the other future events
-	//It seems to be an absolute value describing the time of day while the day itself is taken from the timestamp(?)
+	//There seem to be two ways times are expressed:
+	//Upcoming events are defined by the offset in minutes from the messages timestamp
+	//Currently already active events use a different format. I don't really see a pattern there
 	
-	//58184 encodes 12:00 UTC Today "future time"
-	//49272 encodes 12:00 UTC yesterday "past time"
-	//
-	//58184 + 60 would be 13:00 UTC "future time"
-	//
-	//Since these numbers seem to be rather arbitrary, I assume that there is some encoding and or bitwise something going on
-	//I can't seem to figure that out, though, so help would be much appreciated
+	//Since the clock doesn't seem to have a proper understanding of timezones, the offset also includes the offset from UTC
+	//Time is hard, but this is just weird.
+	
+	//Upcoming event offsets can be parsed by shifting the value 3 bits to the right and then parsing the first 11 bits
+	//as an unsigned int. This will return the offset in minutes from the timestamp.
+	//Example:
+	//0x95 0xE5 is an appointment which starts at 2359 UTC2. Timestamp is 0200 UTC2
+	//1001111111100101 in binary
+	//1011001111111100 shift to the right by 3 bit
+	//10110011111 11100 split in 11 and 5 bit
+	//10110011111 = 1439 Minutes = 23h 59m => 2h UTC offset included
+	
+	//There also seem to be bugs in the backend. See this note excerpt:
+	//1110110011100100 2100UTC2
+	//0010100011100101 2200UTC2
+	//0110010011100101 2300UTC2
+	//1001111111100101 2359UTC2
+	//0000000011100000 0000UTC2 (NEXT DAY UTC2)
+	//0011110011100000 0100UTC2 is this the bug?
+	//0111011111100000 0159UTC2
+	//0001100011100110 0200UTC2 uuuuh. This must be a bug
+	//It flipped back to the beginning of the day until it reached 2AM where it returned to the previous format
+	
+	//If there are multiple already active events which started in the past, they will all share the offset of the oldest
+	//I'm unsure if that is a bug in the backend or intended
 	
 	
 	//Byte 2,3 encode the length + notification time. There can only be one notification time per appointment

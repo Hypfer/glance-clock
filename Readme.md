@@ -69,6 +69,7 @@ _These are all in decimal_
 
 | Command                   | Sequence   | PayloadMessage    | Description                                                                                     |
 |---------------------------|------------|-------------------|-------------------------------------------------------------------------------------------------|
+| CustomScene               | 0,0,0,i    | CustomScene       | i= scene slot                                                                                   |
 | Notify                    | 2,i,0,j    | Notice            | i = scene_priority Known j values  0 => default? ifttt 6 => Weather                             |
 | Timer                     | 3,0,0,0    | Timer             |                                                                                                 |
 | Alarm                     | 4,47,0,0   | ??                |                                                                                                 |
@@ -85,7 +86,7 @@ _These are all in decimal_
 | ScenesStop                | 30         | -                 | Go to previous scene slot. Screen turns black for a moment                                      |
 | ScenesStart               | 31         | -                 | Go to next scene slot                                                                           |
 | ScenesClear               | 32         | -                 | Clear all scenes. Also hides Digital Clockface until new scenes arrive or settings are updated  |
-| ScenesDelete              | 33,0,0,i   | -                 | i = sceneId                                                                                     |
+| ScenesDelete              | 33,0,0,i   | -                 | i = scene slot                                                                                  |
 | ScenesDeleteMany          | 34,0,i,j   | -                 | i = To Slot, j = From Slot                                                                      |
 | UpdateAndRefresh          | 35         | -                 | Displays cloud update animation and refreshes the screen                                        |
 |                           |            |                   |                                                                                                 |

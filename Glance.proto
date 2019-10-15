@@ -154,7 +154,20 @@ message CustomScene {
 	//This represents a sequence of things where each thing is an object
 	//The sequence in which they are contained here doesn't specify when they are displayed though
 	//instead, their visibility depends on their startTime and lifeTime property
-	//Areas drawn using MovingBarData will stick around even after the lifeTime of their MovingBarData has passed
+	
+	//time values are in frames. Framerate is 50FPS
+	
+	//area & segment uint32 both refer to the same data structure:
+	//22 Bit number. At Least 1px
+	//     5  4      3  2      1
+	//000000 00 000000 00 000000
+	//Divided like this
+	//1 Start Pixel from 0 to 47
+	//2 Offset from outer edge 0-3 px
+	//3 Length in Pixels from 0 to 47. Note that there will always be one more.
+	//4 Height 1-3 px
+	//Note that Offset + height cannot exceed 4 or the clock will reject the command+
+	//5 Color ID from Color enum
 	
 	message Object {
 		required Method method = 1 [default = Fill];
@@ -177,9 +190,6 @@ message CustomScene {
 			//LightFlashData, PulseData and WaveData can add further settings to the effect choosen in type
 			//They are however optional. If not specified, the default effect parameters will be used
 			//They will also be ignored if a different type is used
-			
-			//Since there doesn't seem to be a non-animated way to draw multiple pixels simultaneously,
-			//I guess that you're supposed to just use 48 of these to fill everything at once?
 			
 			required Type type = 1 [default = Pulse];
 			repeated int32 area = 2;
@@ -215,14 +225,20 @@ message CustomScene {
 		}
 		
 		message FillData {
-			//This seems to simply clear the ring LEDs. It doesn't care about the segment value.. I think
 			repeated int32 segment = 1;
 		}
 		
-		message GifData { //No idea. Clock rejected this command even with default values
-			  required SomeOtherAnimation type = 1 [default = GifStart];
-			  optional int32 segment = 2 [default = 782080]; //10111110111100000000 in binary = 20bit. That would be unusual..
-			  optional int32 speed = 3 [default = 3];
+		message GifData {
+			  required Animation type = 1 [default = GifStart];
+			  //This only accepts a subset of the animation Enum: 10 - 17
+			  
+			  optional int32 segment = 2 [default = 782080];
+			  //As length in pixels, only multiples of 8 (-1, due to there already being at least one px) work.
+			  //Everything else will be rounded down to the previous multiple of 8 by the clock
+			  //Also, the height property doesn't have any effect
+			  
+			  
+			  optional int32 speed = 3 [default = 3]; //0 to 10
 		}
 		
 		enum Method {
@@ -238,15 +254,7 @@ message CustomScene {
 		
 		message MovingBarData {
 			required int32 area = 1 [default = 0]; //Pixel 0-47
-			//16 Bit number. At Least 1px
-			// 4      3  2      1
-			//00 000000 00 000000
-			//Divided like this
-			//1 Start Pixel from 0 to 47
-			//2 Offset from outer edge 0-3 px
-			//3 Length in Pixels from 0 to 47. Note that there will always be one more
-			//4 Height 1-3 px
-			//Note that Offset + height cannot exceed 4 or the clock will reject the command
+			//The color defined in the area data will be ignored
 			
 			optional Color frontColor = 2 [default = Blue];
 			optional Color backColor = 3 [default = White];
@@ -254,19 +262,19 @@ message CustomScene {
 		}
 		
 		enum Result { //TODO: Find out the meaning of these
-			OK = 0;
+			OK = 0; //Everything drawn will stay (albeit inanimate) after its lifeTime is over
 			SaveTime = 1;
 			BackTime = 2;
 			DelTime = 3;
-			Expired = 4;
-			End = 5; //When an object expires and this is the result, the scene will end
+			Expired = 4; //Everything drawn will vanish after its lifeTime is over
+			End = 5; //The whole scene will end after its lifeTime is over
 			NewSeq = 6;
 		}
 		
 		message WeatherData {
 			required Condition condition = 1 [default = Snow];
 			optional Position position = 2 [default = FullScreen];
-			optional int32 intensity = 3 [default = 5]; //0 to 10, but 0 does nothing (duh)
+			optional int32 intensity = 3 [default = 5]; //0 to 10
 			
 			enum Condition {
 				Snow = 0;

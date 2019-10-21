@@ -347,7 +347,7 @@ message Settings { //TODO defaults
 
 message TextData {
 	optional Modificator modificators = 1 [default = Repeat];
-	required string text = 2 [default = ""];
+	required bytes text = 2; //Each byte is an ascii charcode
 	
 	enum Modificator {
 		None = 0;

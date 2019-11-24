@@ -11,22 +11,6 @@ The device requires both a cloud account as well as an internet-connected smartp
 
 This repository aims to gather all information needed to build a cloudless bridge device which enables use of all Clock features using MQTT/REST/etc.
 
-## Caveats
-This is currently WIP. Not everything is fully understood yet. Help is much appreciated.
-
-Also, there are two main issues:
-
-### Pairing
-The Clock doesn't advertise itself as a regular pairable bluetooth device so getting it to pair with anything but the original app
- (e.g. a regular linux host) is a pain.
-
-### Time Synchronization
-For Time Synchronization, the Mobile App opens up a BLE `Current Time Service` on the Phone which is polled by the clock on connect. (And periodically?)
-
-To force the Clock to poll said Time Service, the Mobile App reads Characteristic `5075fc78-1e0e-11e7-93ae-92361f002671` of 
-service `5075f606-1e0e-11e7-93ae-92361f002671` and then immediately disconnects from the clock, which then fetches the time.
-Timing is of the essence here, since the Clock will only poll the time if the disconnect happens swiftly. (~100-200ms?)
-
 ## General
 Communication is straightforward. The only requirement is to successfully pair (using PIN) with the Clock.
 
@@ -43,26 +27,38 @@ Writing `0x2901` with a command + serialized payload executes said command.
 `gatttool --sec-level=high -b CLOCK_MAC -t random --char-write-req -a 0x001f -n 023000002203120141` sends a `Notify` command with a serialized `Notice` message.
 It will display the letter `A`, play the default notice sound `General_alert_1` as well as the default animation `Pulse` in the default color `Lime`
 
-### Pairing with a Linux host
-Using a fresh raspbian Buster image with Bluez 5.50, pairing is possible but requires good timing.
+Please note that `gatttool` is deprecated and should therefore not be used anymore.
 
-You will need two terminals. One with `bluetoothctl`, the other with `gatttool`
-First, prepare everything in bluetoothctl:
+### Pairing with a Linux host
+Using BlueZ >= 5.50 (e.g. Debian Buster) pairing is straightforward.
+
+Utilizing the interactive console of `bluetoothctl` it pairing is done by executing the following commands:
 ```
 power off
 power on
 agent on
 default-agent
+
+menu scan
+transport le
+back
+
+scan on
 ```
-Then, open `gatttool` in interactive mode in the second terminal: `gatttool -b CLOCK_MAC -t random -l low -I`
-In there, connect to the clock using `connect`.
-Now, prepare the first terminal with the following statement but don't press enter yet. `pair CLOCK_MAC`
 
-Switch to the second terminal, type `disconnect`, immediately switch back to the first terminal and press enter.
-This way, you will not get `Device not available` which is caused by Caveat 1.
+Now, the Glance clock should appear. Press the Pairing button on the clock and enter `pair CLOCK_MAC`.
+If everything is working properly, you should get a PIN prompt. Enter the one displayed on the clock and press enter.
 
-You _MUST_ get a pin prompt. If you didn't get that, the pairing process wasn't successful and you have to start again.
-Type `remove CLOCK_MAC` and begin again from the start. It might take multiple attemts :(
+The clock should play an animation and pairing is done.
+
+If not, remove the device using `remove CLOCK_MAC` and try again from the start.
+Note that you _must_ get a PIN prompt. Otherwise interacting with the clock will not work.
+
+### Time Synchronization
+For Time Synchronization, the clock polls a `Current Time Service` GATT Service on the central device on connect.
+
+Check the specification for more information on that:
+[https://www.bluetooth.com/specifications/gatt/services/](https://www.bluetooth.com/specifications/gatt/services/)
 
 ### Known commands
 _These are all in decimal_
@@ -104,7 +100,7 @@ _These are all in decimal_
 | BrightnessSceneStart      | 61         | -                 |                                                                                                 |
 | DSP_STATE_SHOW            | 70         | -                 | Displays a long number. Maybe serial?                                                           |
 
-It seems to be possible to omit zeroes. At least sending 20 instead of 20,0,0,0,0 also works
+It is possible to omit trailing zeroes.
 
 ### Constants
 
@@ -226,4 +222,4 @@ Concerning what is most likely command `35`:
 ## Credits
 The structure of this readme was plagiarized from [https://github.com/aprosvetova/xiaomi-kettle](https://github.com/aprosvetova/xiaomi-kettle)
 
-The weather watchface messages were analyzed using [https://github.com/jmendeth/protobuf-inspector/](https://github.com/jmendeth/protobuf-inspector/)
+Some messages were analyzed using [https://github.com/jmendeth/protobuf-inspector/](https://github.com/jmendeth/protobuf-inspector/)

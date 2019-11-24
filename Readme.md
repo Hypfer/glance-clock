@@ -69,7 +69,7 @@ _These are all in decimal_
 
 | Command                   | Sequence   | PayloadMessage    | Description                                                                                     |
 |---------------------------|------------|-------------------|-------------------------------------------------------------------------------------------------|
-| CustomScene               | 0,0,0,i    | CustomScene       | i= scene slot                                                                                   |
+| CustomScene               | 0,0,i,j    | CustomScene       | i = Display mode 0 exclusive; 8 watchface; 24 ring & text j = scene slot                                                                                   |
 | Notify                    | 2,i,0,j    | Notice            | i = scene_priority Known j values  0 => default? ifttt 6 => Weather                             |
 | Timer                     | 3,0,0,0    | Timer             |                                                                                                 |
 | Alarm                     | 4,47,0,0   | ??                |                                                                                                 |

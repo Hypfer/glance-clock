@@ -32,7 +32,7 @@ Please note that `gatttool` is deprecated and should therefore not be used anymo
 ### Pairing with a Linux host
 Using BlueZ >= 5.50 (e.g. Debian Buster) pairing is straightforward.
 
-Utilizing the interactive console of `bluetoothctl` it pairing is done by executing the following commands:
+Utilizing the interactive console of `bluetoothctl` it is done by executing the following commands:
 ```
 power off
 power on

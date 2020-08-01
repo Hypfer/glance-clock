@@ -391,6 +391,8 @@ message Alarms {
 message ForecastScene {
 	required int64 timestamp = 1;
 	//A unix timestamp
+	//This has to be localtime so its not _really_ a UTC-based unix timestamp
+	//due to the fact that everything this clock expects is localtime
 	
 	optional uint32 doNotChange = 2 [default = 0]; //Absolutely no idea.
 	
@@ -418,6 +420,8 @@ message ForecastScene {
 message AppointmentsScene {
 	required int64 timestamp = 1;
 	//A unix timestamp;
+	//This probably also has to be localtime so its not _really_ a UTC-based unix timestamp
+	//due to the fact that everything this clock expects is localtime
 	
 	required bytes appointmentData = 2;
 	//I don't really understand the format, sadly. It seems like I'm missing something important
